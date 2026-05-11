@@ -1,30 +1,37 @@
-Tiguan Trakker 🚗📊
-A Python-based automation tool designed to log, clean, and analyze vehicle fuel efficiency and maintenance data for a 2021 Volkswagen Tiguan.
+# Tiguan Trakker 🚗📊
 
-🛠 Project Overview
-This project was developed as part of a transition into Full-Stack Engineering and DevOps. It utilizes a central Nucbox K10 home lab server to automate data processing from raw fuel logs, ensuring data integrity through custom cleaning logic.
+> **Status:** Active Development | **Target:** DevOps/Full-Stack Portfolio
 
-🚀 Key Features
-Automated Data Cleaning: Processes raw CSV fuel logs using the Pandas library.
+A Python-based automation tool designed to log, clean, and analyze vehicle fuel efficiency for a **2021 Volkswagen Tiguan**.
 
-Partial Fill Logic: Implements a strict rule to identify partial fuel fills.
+---
 
-Note: Any reading above 33 MPG is treated as a partial fill and automatically excluded from standard fuel economy calculations to prevent data skewing.
+## 🛠 Project Overview
+This project was developed as part of a career transition into **Full-Stack Engineering and DevOps**. It utilizes a central **Nucbox K10** home lab server to automate data processing from raw fuel logs, ensuring data integrity through custom cleaning logic.
 
-Lab-to-Cloud Integration: Developed on a remote development environment using VS Code Tunnels and GitHub CLI for version control.
+## 🚀 Key Features
+* **Automated Data Cleaning:** Leverages the `Pandas` library to transform raw CSV data.
+* **Partial Fill Logic:** * Any reading **above 33 MPG** is identified as a partial fill.
+    * These entries are automatically excluded from standard fuel economy calculations to maintain accuracy.
+* **Lab-to-Cloud Integration:** Developed using a remote development bridge (VS Code Tunnels) and GitHub CLI.
 
-📁 Repository Structure
-clean_logs.py: The core Python engine for data transformation.
+## 🧰 Tech Stack
 
-Tiguan-Logs/: Directory containing raw and processed mileage data.
+| Category | Tools |
+| :--- | :--- |
+| **Language** | ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) |
+| **Libraries** | Pandas, NumPy |
+| **Infrastructure** | Nucbox K10 Server (Ubuntu/Win11) |
+| **DevOps** | Git, GitHub CLI, VS Code Remote Tunnels |
 
-.gitignore: Configured to protect sensitive environment variables and Google Cloud API keys.
+## 📁 Repository Structure
+* `clean_logs.py`: Core logic for data transformation.
+* `Tiguan-Logs/`: Source directory for raw and processed mileage data.
+* `.gitignore`: Prevents exposure of sensitive Google Cloud API keys.
 
-🧰 Tech Stack
-Language: Python 3.x
+---
 
-Libraries: Pandas, NumPy
-
-Infrastructure: Nucbox K10 Server (Remote Lab)
-
-DevOps Tools: Git, GitHub CLI, VS Code Remote Tunnels
+## 📝 Future Housekeeping
+- [ ] Implement automated GitHub Actions for data validation.
+- [ ] Add visualization dashboard using Matplotlib.
+- [ ] Integrate Google Sheets API for real-time mobile logging.
