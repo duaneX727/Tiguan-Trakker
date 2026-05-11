@@ -1,0 +1,10 @@
+# Ignore sensitive Google API keys
+service_key.json
+
+# Ignore local virtual environments
+.venv/
+__pycache__/
+
+# Ignore raw data files with personal info
+*.csv
+!sample_logs.csv
