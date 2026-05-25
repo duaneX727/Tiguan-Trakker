@@ -1,0 +1,7 @@
+Date,Odometer,Gallons,Price_Per_Gallon,Total_Spent,Fuel_Type,Notes,mpg
+2026-04-01,45200,12.5,4.15,51.88,Premium,Baseline,25.0
+2026-04-10,45550,5.0,4.20,21.00,Premium,Partial fill,70.0
+2026-04-10,45550,5.0,4.20,21.00,Premium,Duplicate Row,70.0
+04/22/2026,46100,13.2,4.05,53.46,Premium,Wrong date format,22.5
+2026-04-25,46400,,4.10,,Premium,Missing gallons,
+2026-04-28,45000,10.0,4.10,41.00,Premium,Backwards Odo,15.0
