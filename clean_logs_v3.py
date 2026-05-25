@@ -9,9 +9,6 @@ import pandas as pd
 import numpy as np
 import argparse
 import os
-#import auth
-
-
 
 
 def process_vehicle_logs(input_file):
@@ -63,20 +60,17 @@ def process_vehicle_logs(input_file):
 def blind_append_to_sheets(df, spreadsheet_name, worksheet_name):
         try:
            import auth  # Leveraging your successful auth.py
-           # ... after cleaning your data ...
            client = auth.get_gspread_client() # Or whatever your auth function is named
         
-           # Open the sheet
+        # Open the sheet
            sh = client.open(spreadsheet_name)
            worksheet = sh.worksheet(worksheet_name)
-           ###
-           print("DEBUG - Columns before conversion:", df.columns.tolist())
-           ###
-           # Convert DataFrame to a list of lists (handling NaNs for Google Sheets)
-           # Sheets doesn't like 'NaN', so we fill them with empty strings
+        
+        # Convert DataFrame to a list of lists (handling NaNs for Google Sheets)
+        # Sheets doesn't like 'NaN', so we fill them with empty strings
            upload_data = df.fillna('').values.tolist()
-           print("DEBUG - First row of upload data:", upload_data[0] if upload_data else "Empty")  # Check the first row of data being uploaded
-           # Perform the append
+        
+        # Perform the append
            worksheet.append_rows(upload_data, value_input_option='USER_ENTERED')
            print(f"🚀 Success! {len(upload_data)} rows appended to {worksheet_name}.")
         
@@ -84,7 +78,7 @@ def blind_append_to_sheets(df, spreadsheet_name, worksheet_name):
            print(f"❌ Sync failed: {e}")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tiguan Trakker")
-    parser.add_argument("--file", help="The name of the raw CSV file to process")
+    parser.add_argument("file", help="The name of the raw CSV file to process")
     args = parser.parse_args()
 
     # 1. This runs the cleaning and gets the "cleaned_df" back

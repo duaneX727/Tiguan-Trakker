@@ -1,5 +1,23 @@
 import csv
 import os
+import pandas as pd
+import gspread
+from auth import get_sheet  # Import your custom function
+
+def process_and_upload(csv_file):
+    # 1. Clean your logs
+    df = pd.read_csv(csv_file)
+    # ... (Your existing logic for filtering, etc.) ...
+    
+    # 2. Upload to Google Sheets
+    sheet = get_sheet("Tiguan Logs")
+    if sheet:
+        # Convert dataframe to list of lists for gspread
+        data = df.values.tolist()
+        sheet.append_rows(data)
+        print("Data successfully pushed to Google Sheets!")
+    else:
+        print("Failed to push data.")
 
 # 1. CONFIGURATION
 MASTER_FILE = "clean_logs.csv"

@@ -12,7 +12,7 @@ def append_log_entry(data_dict):
     file_path = 'tiguan_logs.csv'
     # file_path = '_March.csv'
     # file_path =_
-    file_exists = os.path.isfile(file_path)
+    # file_exists = os.path.isfile(file_path)
     # Check if entry already exists to prevent redundancy
     if os.path.isfile(file_path):
         with open(file_path, 'r') as f:

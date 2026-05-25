@@ -7,4 +7,5 @@ __pycache__/
 
 # Ignore raw data files with personal info
 *.csv
-!sample_logs.csv
+!sample_logs.csvservice_key.json
+.env
