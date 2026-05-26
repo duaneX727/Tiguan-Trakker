@@ -16,10 +16,10 @@ def process_vehicle_logs(file_path):
     
     # 1. Read Data safely handling Windows/Excel text encoding anomalies (e.g., 0x97 bytes)
     try:
-        df = pd.read_csv(file_path, encoding='utf-8')
+        df = pd.read_csv(file_path, encoding='utf-8', on_bad_lines='skip')
     except UnicodeDecodeError:
         print("⚠️ Standard UTF-8 decoding failed. Re-trying with cp1252 window sanitation...")
-        df = pd.read_csv(file_path, encoding='cp1252')
+        df = pd.read_csv(file_path, encoding='cp1252', on_bad_lines='skip')
 
     # 2. Enforce Reconciled Structural Mapping
     # Standardizing your tracked metrics (Date, Odometer, Trip, Fuel Added, Price)
@@ -44,7 +44,7 @@ def process_vehicle_logs(file_path):
     # 5. Connect cleanly to Cloud Engine and update live sheets
     try:
         print("🔗 Establishing cloud handshake via Google API wrapper...")
-        sheet = get_google_sheet("Tiguan Logs") # Matches your Google Drive target string exactly
+        sheet = get_google_sheet("Tiguan_Master_Log") # Matches your Google Drive target string exactly
         
         # Convert pandas dataframe updates to an array format expected by the spreadsheet
         raw_values = df.fillna('').values.tolist()

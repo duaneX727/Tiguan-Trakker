@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-def get_sheet(sheet_name):
+def get_google_sheet(sheet_name):
     """
     Authenticates with Google Sheets API and returns the specified spreadsheet object.
     """
