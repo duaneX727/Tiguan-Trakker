@@ -1,3 +1,4 @@
 service_key.json
 .env
 __pycache__/
+cleaned_*.csv
