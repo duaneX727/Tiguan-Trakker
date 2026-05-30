@@ -2,3 +2,8 @@ service_key.json
 .env
 __pycache__/
 cleaned_*.csv
+# Ignore other projects to clean up the Source Control tab
+lab-server/
+K10-Lab/
+Tiguan-Project/
+# Add any other project folders that show up as "Untracked" (U)
