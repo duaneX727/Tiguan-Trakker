@@ -6,3 +6,8 @@ cleaned_*.csv
 lab-server/
 K10-Lab/
 Tiguan-Project/
+# Ignore all CSV files
+*.csv
+
+# BUT... explicitly allow these Python files
+!*.py
