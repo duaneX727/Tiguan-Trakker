@@ -8,6 +8,7 @@ K10-Lab/
 Tiguan-Project/
 # Ignore all CSV files
 *.csv
+*.zip
 
 # BUT... explicitly allow these Python files
 !*.py
