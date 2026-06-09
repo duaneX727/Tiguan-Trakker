@@ -4,11 +4,13 @@ __pycache__/
 cleaned_*.csv
 # Ignore other projects to clean up the Source Control tab
 lab-server/
+# Ignore nested independent project directories
 K10-Lab/
+trakker-analytics-api/
 Tiguan-Project/
 # Ignore all CSV files
 *.csv
 *.zip
 
 # BUT... explicitly allow these Python files
-!*.py
+!/*.py
