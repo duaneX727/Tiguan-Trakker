@@ -1,9 +1,13 @@
 service_key.json
 .env
+.venv/
 __pycache__/
+*.db
 cleaned_*.csv
 # Ignore other projects to clean up the Source Control tab
 lab-server/
+# Exclude the database file
+data/fuel_log.db
 # Ignore nested independent project directories
 K10-Lab/
 trakker-analytics-api/
@@ -11,6 +15,12 @@ Tiguan-Project/
 # Ignore all CSV files
 *.csv
 *.zip
-
+# Specifically track the webhook source code
+!trakker-ingest-webhook/
+trakker-ingest-webhook/node_modules/
 # To make absolutely sure Git completely ignores those nested directories and doesn't pull in random Python scripts from them, it is safest to put your explicit rules above the directory-ignore rules, or scope the whitelist strictly to your root directory
-!/*.py
+#!/*.py
+!db_manager.py
+!preview_migration.py
+!setup_db.py
+!test_db.py
