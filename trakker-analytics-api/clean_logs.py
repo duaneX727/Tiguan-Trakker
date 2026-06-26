@@ -40,7 +40,25 @@ def process_vehicle_logs(file_path):
     output_filename = f"cleaned_{os.path.basename(file_path)}"
     df.to_csv(output_filename, index=False)
     print(f"💾 Local backup captured: {output_filename}")
-
+# === SQLite Master Database Integration (Option A) ===
+    try:
+        import sqlite3
+        
+        # Absolute path to your persistent lab database
+        db_path = r"C:\mdmcode\lab-server\K10-Lab\Tiguan-Project\fuel_tracking.db"
+        
+        # Connect to SQLite
+        conn = sqlite3.connect(db_path)
+        
+        # Append the clean Pandas DataFrame directly to your table
+        # 'if_exists="append"' ensures we don't overwrite your historical logs
+        df.to_sql('fuel_logs', conn, if_exists='append', index=False)
+        
+        conn.close()
+        print("🗄️ SQLite Sync Complete! Cleaned records appended to master database logs.")
+        
+    except Exception as db_err:
+        print(f"❌ Database Append Failed: {db_err}")
     # 5. Connect cleanly to Cloud Engine and update live sheets
     try:
         print("🔗 Establishing cloud handshake via Google API wrapper...")

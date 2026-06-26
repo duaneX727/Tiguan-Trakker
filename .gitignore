@@ -6,6 +6,10 @@ __pycache__/
 cleaned_*.csv
 # Ignore other projects to clean up the Source Control tab
 lab-server/
+# Ignore generated webhook payloads and log output
+latest_fuel_log.json
+history_*.txt
+*.csv
 # Exclude the database file
 data/fuel_log.db
 # Ignore nested independent project directories

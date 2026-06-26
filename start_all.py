@@ -1,56 +1,53 @@
-
-import subprocess
 import sys
+import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
-import os
 
-# 1. Define paths relative to the script location
-    # Go up two levels: Tiguan-Project -> K10-Lab -> lab-server
-base_dir = Path(__file__).resolve().parent
-lab_server_dir = base_dir.parent.parent
-    
-node_dir = lab_server_dir / "trakker-ingest-webhook"
-py_server = lab_server_dir / "trakker-analytics-api" / "server.py"
-
-
-# Access the token
-CLOUDFLARE_TOKEN = os.getenv("CLOUDFLARE_API_TOKEN")
-
-# Example usage (e.g., in headers for an API request)
-headers = {
-    "Authorization": f"Bearer {CLOUDFLARE_TOKEN}",
-    "Content-Type": "application/json"
-}
-
-# Load environment variables from the .env file in the same directory
 load_dotenv()
 
-# Get the directory where this script is located
-base_dir = Path(__file__).resolve().parent
-    # Go UP two folder levels to reach lab-server
-lab_server_dir = base_dir.parent.parent
-    
 def run_services():
-        # Define paths using the lab_server_dir
-        node_dir = lab_server_dir / "trakker-ingest-webhook"
-        py_server = lab_server_dir / "trakker-analytics-api" / "server.py"
-    
-    # 2. Start Node.js server
-    # We use 'cwd=node_dir' to ensure Node runs inside the folder where server.js lives
-print("Starting Node.js server...")
-node_proc = subprocess.Popen(["node", "server.js"], cwd=node_dir)
+    # 100% explicitly mapped paths to your lab-server layout
+    node_dir = r"C:\mdmcode\lab-server\trakker-ingest-webhook"
+    py_server_file = r"C:\mdmcode\lab-server\trakker-analytics-api\server.py"
 
-    # 3. Start Python server
-print("Starting Python analytics server...")
-try:
-        # This keeps the Python server in the foreground
-        # Use sys.executable to ensure we use the same Python interpreter as the current venv
-        subprocess.run([sys.executable, str(py_server)])
-except KeyboardInterrupt:
-        print("\nShutting down services...")
-        # Terminate the background Node process when we exit the Python script
+    print("=" * 60)
+    print("🚀 INITIALIZING PRODUCTION MASTER K10 LAB INFRASTRUCTURE")
+    print("=" * 60)
+
+    # 1. Launch Edge Network Tunnel
+    print("[+] Starting Cloudflare Tunnel (Protocol: HTTP/2)...")
+    tunnel_cmd = ["cloudflared", "tunnel", "run", "--protocol", "http2", "mdm-api-server"]
+    tunnel_proc = subprocess.Popen(tunnel_cmd)
+
+    # 2. Launch Ingest Webhook Engine
+    print(f"[+] Starting Node.js webhook server from: {node_dir}")
+    node_proc = subprocess.Popen(["node", "server.js"], cwd=node_dir)
+
+    # 3. Launch Analytics Engine
+    print(f"[+] Starting Python analytics server file: {py_server_file}")
+    print("=" * 60)
+    
+    try:
+        py_dir = str(Path(py_server_file).parent)
+        # Using subprocess.Popen instead of .run so it doesn't block the execution stream
+        py_proc = subprocess.Popen([sys.executable, py_server_file], cwd=py_dir)
+        
+        # Keep the master orchestrator alive to hold open the background process threads
+        py_proc.wait()
+            
+    except KeyboardInterrupt:
+        print("\n" + "=" * 60)
+        print("🛑 SHUTTING DOWN MASTER LAB SERVICES CLEANLY...")
+        print("=" * 60)
+        
         node_proc.terminate()
+        tunnel_proc.terminate()
+        py_proc.terminate()
+        
+        node_proc.wait()
+        tunnel_proc.wait()
+        py_proc.wait()
+        print("[✓] Core laboratory threads safely terminated.")
 
 if __name__ == "__main__":
     run_services()

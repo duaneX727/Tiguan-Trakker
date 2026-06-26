@@ -1,63 +1,80 @@
-from flask import Flask, jsonify
-import logging
-import csv
 import os
+import sys
+from pathlib import Path
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import pandas as pd
 
 app = Flask(__name__)
-# --- Logger Suppression ---
-# This silences the noisy 'GET' request logs from bots
-# while keeping your own error and warning logs visible.
-log = logging.getLogger("werkzeug")
-log.setLevel(logging.WARNING)
+CORS(app)  # Allows your frontend UI components to connect without CORS errors
 
-# Dynamically find the path of lab-backend-api folder
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Go back one step (..), then jump straight into the Tiguan logs folder
-# Force the path to look for the file starting from the root of your project
-# This assumes server.py is in 'lab-backend-api' and the CSV is in 'K10-Lab/Tiguan-Project'
-
-CSV_FILE = os.path.join(BASE_DIR, 'K10-Lab', 'Tiguan-Project', 'cleaned_tiguan_logs.csv')
+# Hardcoded absolute paths to guarantee it locks into your master data directory
+DATA_DIR = Path(r"C:\mdmcode\lab-server\K10-Lab\Tiguan-Project\data")
+LOG_FILE = DATA_DIR / "raw_logs.csv"
 
 
-def read_logs():
-    if not os.path.exists(CSV_FILE):
-        return {"error": f"File '{CSV_FILE}' not found on server."}
-    
-    logs = []
+@app.route('/api/analytics', methods=['GET'])
+def get_analytics():
+    """
+    Parses the raw CSV telemetry logs and calculates live performance metrics.
+    """
+    if not LOG_FILE.exists():
+        return jsonify({
+            "status": "error",
+            "message": f"Telemetry database not found at {LOG_FILE}. Awaiting initial ingest stream."
+        }), 404
+
     try:
-        # Use latin-1 encoding to safely handle em-dash format styles
-        with open(CSV_FILE, mode='r', encoding='latin-1') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                logs.append(row)
-        return logs
+        # Load telemetry data using Pandas
+        df = pd.read_csv(LOG_FILE)
+        
+        if df.empty:
+            return jsonify({
+                "status": "success",
+                "total_records": 0,
+                "metrics": {}
+            })
+
+        # Calculate live lab metrics
+        total_records = len(df)
+        
+        # Safely extract matching columns if they exist in your schema
+        latest_entries = df.tail(10).to_dict(orient='records')
+
+        return jsonify({
+            "status": "success",
+            "total_records": total_records,
+            "latest_telemetry": latest_entries,
+            "engine_status": "ONLINE"
+        }), 200
+
     except Exception as e:
-        return {"error": str(e)}
+        return jsonify({
+            "status": "error",
+            "message": f"Failed to parse analytical metrics: {str(e)}"
+        }), 500
 
 
-@app.route('/')
-def home():
-    return "Tiguan-Trakker Backend Active"
-# def home():
-#     return jsonify({
-#         "status": "online",
-#         "project": "Tiguan Trakker Homelab API",
-#         "endpoints": {
-#             "all_logs": "/api/logs"
-#         }
-#     })
-
-# You can add your Tiguan-Trakker API logic here
-# e.g., @app.route('/log-maintenance', methods=['POST'])
-@app.route('/api/logs')
-def get_logs():
-    data = read_logs()
-    return jsonify(data)
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """
+    Core infrastructure heartbeat check.
+    """
+    return jsonify({
+        "status": "healthy",
+        "gateway": "K10-Lab Analytics Engine",
+        "database_connected": LOG_FILE.exists()
+    }), 200
 
 
-# --- Startup Log ---
-if __name__ == "__main__":
-    print("Starting Tiguan-Trakker Server...")
-    # Using 0.0.0.0 makes the server accessible on your local network
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == '__main__':
+    # Ensure the master data directory exists before starting up
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    
+    print("=" * 60)
+    print("⚡ K10 ANALYTICS ENGINE RUNNING ON PORT 5000")
+    print(f"📁 Tracking Data Target: {LOG_FILE}")
+    print("=" * 60)
+    
+    # Run locally on standard port 5000
+    app.run(host='127.0.0.1', port=5000, debug=False)
