@@ -52,6 +52,7 @@ def run_analytics():
     for row in rows:
         date_str, odo, trip, gal, cost, mpg = row
         
+        # Format variables cleanly to standard strings first
         odo_val  = f"{odo:.1f}" if odo is not None else "N/A"
         trip_val = f"{trip:.1f}" if trip is not None else "N/A"
         gal_val  = f"{gal:.2f}" if gal is not None else "N/A"
